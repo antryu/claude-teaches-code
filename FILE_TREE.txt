@@ -1,0 +1,94 @@
+claude-teaches-code/
+│
+├── 📄 Documentation (6 files)
+│   ├── README.md                    # Bilingual project overview (EN/KO)
+│   ├── ARCHITECTURE.md              # System architecture & diagrams
+│   ├── INSTALL.md                   # Installation & troubleshooting
+│   ├── DEMO.md                      # Demo scenarios & examples
+│   ├── PROJECT_SUMMARY.md           # Project summary
+│   └── COMPLETION_REPORT.md         # Final completion report
+│
+├── 🔧 Configuration (5 files)
+│   ├── .gitignore                   # Git ignore patterns
+│   ├── package.json                 # Root package with scripts
+│   ├── setup.sh                     # Automated setup script
+│   └── .vscode/
+│       ├── settings.json            # VSCode settings
+│       └── extensions.json          # Recommended extensions
+│
+├── 🖥️  Backend (11 files)
+│   ├── package.json                 # Backend dependencies
+│   ├── tsconfig.json                # TypeScript configuration
+│   ├── .env.example                 # Environment template
+│   └── src/
+│       ├── index.ts                 # Express server entry
+│       ├── agents/
+│       │   ├── orchestrator.ts      # Intent analysis agent
+│       │   ├── codeGen.ts           # Code generation agent
+│       │   └── explain.ts           # Explanation agent (Extended Thinking)
+│       ├── mcp/
+│       │   └── documentation.ts     # MCP server (fetch_docs, search_examples)
+│       ├── routes/
+│       │   ├── generate.ts          # POST /api/generate (SSE)
+│       │   └── explain.ts           # POST /api/explain-line, /alternatives
+│       ├── locales/
+│       │   ├── en.json              # English agent prompts
+│       │   └── ko.json              # Korean agent prompts
+│       ├── types/
+│       │   └── index.ts             # TypeScript types
+│       └── utils/
+│           └── locale.ts            # Locale utilities
+│
+└── 🎨 Frontend (21 files)
+    ├── index.html                   # HTML template
+    ├── package.json                 # Frontend dependencies
+    ├── vite.config.ts               # Vite configuration
+    ├── tailwind.config.js           # Tailwind CSS config
+    ├── postcss.config.js            # PostCSS config
+    ├── tsconfig.json                # TypeScript config
+    ├── tsconfig.node.json           # TypeScript Node config
+    ├── .env.example                 # Environment template
+    └── src/
+        ├── main.tsx                 # React entry point
+        ├── App.tsx                  # Main application
+        ├── index.css                # Tailwind styles
+        ├── components/
+        │   ├── CodeEditor.tsx       # Monaco editor with "Why?" buttons
+        │   ├── WorkflowVisualizer.tsx # Animated agent workflow
+        │   ├── ThinkingProcess.tsx  # Extended Thinking panel
+        │   └── ExplanationPanel.tsx # Markdown explanations
+        ├── i18n/
+        │   ├── config.ts            # i18next setup
+        │   ├── en.json              # English UI translations
+        │   └── ko.json              # Korean UI translations
+        ├── services/
+        │   └── api.ts               # API client with SSE
+        └── types/
+            └── index.ts             # TypeScript types
+
+📊 Summary:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Total Files: 43
+├── Documentation: 6 files
+├── Backend: 11 files
+├── Frontend: 21 files
+└── Configuration: 5 files
+
+✨ Features:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ 3 AI Agents (Orchestrator, CodeGen, Explain)
+✅ MCP Server (fetch_docs, search_examples)
+✅ SSE Streaming
+✅ Extended Thinking (10K tokens)
+✅ Bilingual (EN/KO)
+✅ Monaco Editor
+✅ Framer Motion
+✅ Dark/Light Theme
+✅ Production Ready
+
+🚀 Quick Start:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. ./setup.sh
+2. Add ANTHROPIC_API_KEY to backend/.env
+3. npm run dev
+4. Visit http://localhost:3000

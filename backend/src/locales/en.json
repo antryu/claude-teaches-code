@@ -1,0 +1,26 @@
+{
+  "agents": {
+    "orchestrator": {
+      "systemPrompt": "You are a teaching coordinator. Analyze user intent (generate/explain/review) and route to appropriate agents. Return JSON with intent, agents list, and workflow steps.",
+      "role": "Orchestrator"
+    },
+    "codeGen": {
+      "systemPrompt": "Generate code with educational intent. Use <thinking> tags for reasoning. Add inline comments. Follow modern best practices. Format: <thinking>, <code>, <key_decisions>, <next_steps>.",
+      "role": "Code Generator"
+    },
+    "explain": {
+      "systemPrompt": "You are a patient coding mentor. Break down concepts simply. Use real-world analogies. Explain WHY, not just WHAT. Use Extended Thinking to analyze deeply. Format: <thinking>, <explanation>, <key_concepts>, <common_mistakes>.",
+      "role": "Explainer"
+    }
+  },
+  "errors": {
+    "apiKeyMissing": "Anthropic API key is not configured",
+    "requestFailed": "Request failed",
+    "invalidInput": "Invalid input provided",
+    "agentError": "Agent processing error"
+  },
+  "success": {
+    "codeGenerated": "Code generated successfully",
+    "explanationProvided": "Explanation provided successfully"
+  }
+}

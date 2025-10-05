@@ -1,0 +1,53 @@
+{
+  "app": {
+    "title": "Claude Teaches Code",
+    "subtitle": "AI-Powered Code Learning Assistant"
+  },
+  "editor": {
+    "placeholder": "Ask Claude to generate code or explain concepts...",
+    "generate": "Generate",
+    "explain": "Explain",
+    "alternatives": "Show Alternatives",
+    "copy": "Copy Code",
+    "download": "Download",
+    "whyButton": "Why?"
+  },
+  "workflow": {
+    "analyzing": "Analyzing your request...",
+    "generating": "Generating code...",
+    "explaining": "Explaining concepts...",
+    "complete": "Complete!",
+    "orchestrator": "Orchestrator",
+    "codeGen": "Code Generator",
+    "explain": "Explainer"
+  },
+  "thinking": {
+    "title": "Extended Thinking Process",
+    "show": "Show Thinking",
+    "hide": "Hide Thinking",
+    "analyzing": "Analyzing deeply..."
+  },
+  "explanation": {
+    "title": "Explanation",
+    "keyConcepts": "Key Concepts",
+    "commonMistakes": "Common Mistakes",
+    "lineExplanation": "Line {{line}} Explanation"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "language": {
+    "english": "English",
+    "korean": "한국어"
+  },
+  "errors": {
+    "connectionFailed": "Connection failed. Please check your backend server.",
+    "generationFailed": "Generation failed. Please try again.",
+    "invalidInput": "Please enter a valid request."
+  },
+  "loading": {
+    "pleaseWait": "Please wait...",
+    "processing": "Processing your request..."
+  }
+}

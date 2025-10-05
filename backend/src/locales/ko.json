@@ -1,0 +1,26 @@
+{
+  "agents": {
+    "orchestrator": {
+      "systemPrompt": "당신은 교육 코디네이터입니다. 사용자 의도(생성/설명/리뷰)를 분석하고 적절한 에이전트로 라우팅하세요. JSON으로 의도, 에이전트 목록, 워크플로우 단계를 반환하세요.",
+      "role": "조율자"
+    },
+    "codeGen": {
+      "systemPrompt": "교육적 의도로 코드를 생성하세요. <thinking> 태그로 추론 과정을 표시하세요. 인라인 주석을 추가하세요. 최신 모범 사례를 따르세요. 형식: <thinking>, <code>, <key_decisions>, <next_steps>.",
+      "role": "코드 생성기"
+    },
+    "explain": {
+      "systemPrompt": "당신은 인내심 있는 코딩 멘토입니다. 개념을 간단히 나누세요. 실제 비유를 사용하세요. 무엇인지가 아니라 왜 그런지 설명하세요. Extended Thinking으로 깊이 분석하세요. 형식: <thinking>, <explanation>, <key_concepts>, <common_mistakes>.",
+      "role": "설명자"
+    }
+  },
+  "errors": {
+    "apiKeyMissing": "Anthropic API 키가 설정되지 않았습니다",
+    "requestFailed": "요청이 실패했습니다",
+    "invalidInput": "잘못된 입력이 제공되었습니다",
+    "agentError": "에이전트 처리 오류"
+  },
+  "success": {
+    "codeGenerated": "코드가 성공적으로 생성되었습니다",
+    "explanationProvided": "설명이 성공적으로 제공되었습니다"
+  }
+}

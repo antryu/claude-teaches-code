@@ -1,0 +1,53 @@
+{
+  "app": {
+    "title": "Claude 코드 교실",
+    "subtitle": "AI 기반 코드 학습 도우미"
+  },
+  "editor": {
+    "placeholder": "Claude에게 코드 생성이나 개념 설명을 요청하세요...",
+    "generate": "생성",
+    "explain": "설명",
+    "alternatives": "대안 보기",
+    "copy": "코드 복사",
+    "download": "다운로드",
+    "whyButton": "왜?"
+  },
+  "workflow": {
+    "analyzing": "요청 분석 중...",
+    "generating": "코드 생성 중...",
+    "explaining": "개념 설명 중...",
+    "complete": "완료!",
+    "orchestrator": "조율자",
+    "codeGen": "코드 생성기",
+    "explain": "설명자"
+  },
+  "thinking": {
+    "title": "확장 사고 과정",
+    "show": "사고 과정 보기",
+    "hide": "사고 과정 숨기기",
+    "analyzing": "깊이 분석 중..."
+  },
+  "explanation": {
+    "title": "설명",
+    "keyConcepts": "핵심 개념",
+    "commonMistakes": "흔한 실수",
+    "lineExplanation": "{{line}}번째 줄 설명"
+  },
+  "theme": {
+    "light": "라이트",
+    "dark": "다크"
+  },
+  "language": {
+    "english": "English",
+    "korean": "한국어"
+  },
+  "errors": {
+    "connectionFailed": "연결 실패. 백엔드 서버를 확인하세요.",
+    "generationFailed": "생성 실패. 다시 시도하세요.",
+    "invalidInput": "유효한 요청을 입력하세요."
+  },
+  "loading": {
+    "pleaseWait": "잠시만 기다려주세요...",
+    "processing": "요청 처리 중..."
+  }
+}
