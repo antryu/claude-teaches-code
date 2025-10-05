@@ -8,10 +8,13 @@ export function createPlaygroundRouter(): Router {
    * JavaScript 코드 실행
    */
   router.post('/playground/execute', async (req: Request, res: Response) => {
+    console.log('🎮 Execute request received');
     try {
       const { code } = req.body;
+      console.log('📝 Code to execute:', code?.substring(0, 100));
 
       if (!code) {
+        console.error('❌ No code provided');
         return res.status(400).json({
           success: false,
           error: 'Code is required',

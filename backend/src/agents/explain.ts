@@ -171,7 +171,11 @@ export class ExplainAgent {
       }
     }
 
-    return this.parseExplanation(mainContent, '');
+    // 라인 설명은 간단하게 텍스트만 반환
+    return {
+      explanation: mainContent,
+      thinking: ''
+    };
   }
 
   async *explainStream(

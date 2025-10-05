@@ -82,7 +82,22 @@ export class CodeGenAgent {
 
     // Detect programming language from code block
     const langMatch = code.match(/```(\w+)/);
-    const detectedLanguage = langMatch ? langMatch[1] : 'text';
+    let detectedLanguage = langMatch ? langMatch[1].toLowerCase() : 'text';
+
+    // Normalize language names
+    if (detectedLanguage === 'js') detectedLanguage = 'javascript';
+    if (detectedLanguage === 'py') detectedLanguage = 'python';
+    if (detectedLanguage === 'ts') detectedLanguage = 'typescript';
+
+    // If still 'text', try to infer from content
+    if (detectedLanguage === 'text') {
+      const cleanCode = code.replace(/```\w*\n?|```/g, '').trim();
+      if (cleanCode.includes('function') || cleanCode.includes('const') || cleanCode.includes('let') || cleanCode.includes('=>')) {
+        detectedLanguage = 'javascript';
+      } else if (cleanCode.includes('def ') || cleanCode.includes('import ') || cleanCode.includes('print(')) {
+        detectedLanguage = 'python';
+      }
+    }
 
     return {
       thinking,

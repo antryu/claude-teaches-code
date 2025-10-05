@@ -24,13 +24,16 @@ export function CodePlayground({ code, language, onExecutionResult }: CodePlaygr
 
   const handleRun = async () => {
     const normalizedLang = language.toLowerCase();
+    console.log('🎮 CodePlayground handleRun called, language:', normalizedLang);
 
     // JavaScript 실행
     if (normalizedLang === 'javascript' || normalizedLang === 'js') {
+      console.log('📝 Executing JavaScript code');
       setIsRunning(true);
       setResult(null);
 
       try {
+        console.log('🌐 Fetching /api/playground/execute...');
         const response = await fetch('/api/playground/execute', {
           method: 'POST',
           headers: {
@@ -39,7 +42,9 @@ export function CodePlayground({ code, language, onExecutionResult }: CodePlaygr
           body: JSON.stringify({ code }),
         });
 
+        console.log('📥 Response status:', response.status);
         const data = await response.json();
+        console.log('📦 Response data:', data);
 
         if (data.success) {
           setResult(data.data);
@@ -121,12 +126,14 @@ export function CodePlayground({ code, language, onExecutionResult }: CodePlaygr
     language.toLowerCase() === 'python' ||
     language.toLowerCase() === 'py';
 
+  console.log('CodePlayground render - language:', language, 'canRun:', canRun);
+
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-4">
       <div className="flex items-center justify-between mb-4">
         <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
           <Zap className="w-5 h-5 text-yellow-500" />
-          코드 실행
+          {t('codePlayground.title')}
         </h4>
         <button
           onClick={handleRun}
@@ -134,19 +141,19 @@ export function CodePlayground({ code, language, onExecutionResult }: CodePlaygr
           className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg transition-all duration-200 text-sm font-medium disabled:cursor-not-allowed hover:scale-105 active:scale-95"
         >
           <Play className={`w-4 h-4 ${isRunning ? 'animate-spin' : ''}`} />
-          {isRunning ? '실행 중...' : '실행'}
+          {isRunning ? t('codePlayground.running') : t('codePlayground.run')}
         </button>
       </div>
 
       {!canRun && (
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 text-sm text-yellow-800 dark:text-yellow-200">
-          💡 현재 JavaScript와 Python만 실행 가능합니다.
+          {t('codePlayground.notSupported')}
         </div>
       )}
 
       {isPyodideLoading && (
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-sm text-blue-800 dark:text-blue-200">
-          🐍 Python 환경 로딩 중... (최초 1회만 시간이 걸립니다)
+          {t('codePlayground.pyodideLoading')}
         </div>
       )}
 
@@ -172,7 +179,7 @@ export function CodePlayground({ code, language, onExecutionResult }: CodePlaygr
                     : 'text-red-900 dark:text-red-100'
                 }`}
               >
-                {result.success ? '✅ 실행 성공' : '❌ 실행 실패'}
+                {result.success ? t('codePlayground.success') : t('codePlayground.failed')}
               </h5>
               {result.executionTime !== undefined && (
                 <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 mb-2">

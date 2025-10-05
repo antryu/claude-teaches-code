@@ -49,5 +49,33 @@
   "loading": {
     "pleaseWait": "잠시만 기다려주세요...",
     "processing": "요청 처리 중..."
+  },
+  "codePlayground": {
+    "title": "코드 실행",
+    "run": "실행",
+    "running": "실행 중...",
+    "success": "✅ 실행 성공",
+    "failed": "❌ 실행 실패",
+    "notSupported": "💡 현재 JavaScript와 Python만 실행 가능합니다.",
+    "pyodideLoading": "🐍 Python 환경 로딩 중... (최초 1회만 시간이 걸립니다)"
+  },
+  "performance": {
+    "title": "성능 측정",
+    "measure": "측정",
+    "measuring": "측정 중...",
+    "average": "평균",
+    "min": "최소",
+    "max": "최대",
+    "iterations": "회 반복"
+  },
+  "notion": {
+    "save": "Notion에 저장",
+    "saving": "저장 중...",
+    "success": "Notion에 성공적으로 저장되었습니다!",
+    "error": "Notion 저장 실패"
+  },
+  "codeEditor": {
+    "keyDecisions": "🎯 주요 결정사항",
+    "nextSteps": "📋 다음 단계"
   }
 }

@@ -6,8 +6,6 @@ import { WorkflowVisualizer } from './components/WorkflowVisualizer';
 import { ThinkingProcess } from './components/ThinkingProcess';
 import { ExplanationPanel } from './components/ExplanationPanel';
 import { CodePlayground } from './components/CodePlayground';
-import { CodeComparison } from './components/CodeComparison';
-import { PerformanceMeasure } from './components/PerformanceMeasure';
 import { NotionSaveButton } from './components/NotionSaveButton';
 import {
   GeneratedCode,
@@ -145,7 +143,9 @@ function App() {
   };
 
   const toggleLanguage = () => {
-    setLanguage((prev) => (prev === 'en' ? 'ko' : 'en'));
+    const newLang = language === 'en' ? 'ko' : 'en';
+    setLanguage(newLang);
+    i18n.changeLanguage(newLang);
   };
 
   return (
@@ -256,7 +256,7 @@ function App() {
                 {generatedCode.keyDecisions.length > 0 && (
                   <div className="mb-4">
                     <h4 className="text-sm font-semibold mb-2 text-gray-900 dark:text-gray-100">
-                      🎯 Key Decisions
+                      {t('codeEditor.keyDecisions')}
                     </h4>
                     <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
                       {generatedCode.keyDecisions.map((decision, i) => (
@@ -268,7 +268,7 @@ function App() {
                 {generatedCode.nextSteps.length > 0 && (
                   <div>
                     <h4 className="text-sm font-semibold mb-2 text-gray-900 dark:text-gray-100">
-                      📋 Next Steps
+                      {t('codeEditor.nextSteps')}
                     </h4>
                     <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
                       {generatedCode.nextSteps.map((step, i) => (
@@ -289,19 +289,12 @@ function App() {
 
         {/* Bottom Section: Interactive Tools */}
         {generatedCode && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Code Playground */}
             <CodePlayground
               code={generatedCode.code}
               language={generatedCode.language}
               onExecutionResult={setExecutionResult}
-            />
-
-            {/* Performance Measure */}
-            <PerformanceMeasure
-              code={generatedCode.code}
-              language={generatedCode.language}
-              onPerformanceResult={setPerformanceData}
             />
 
             {/* Notion Save Button */}
@@ -316,13 +309,6 @@ function App() {
               executionResult={executionResult || undefined}
               performanceData={performanceData || undefined}
             />
-          </div>
-        )}
-
-        {/* Code Comparison - Full Width */}
-        {generatedCode && (
-          <div className="mt-6">
-            <CodeComparison />
           </div>
         )}
       </main>

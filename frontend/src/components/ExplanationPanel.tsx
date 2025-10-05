@@ -40,7 +40,7 @@ export function ExplanationPanel({ explanation }: ExplanationPanelProps) {
       </div>
 
       {/* Key Concepts */}
-      {explanation.keyConcepts.length > 0 && (
+      {explanation.keyConcepts && explanation.keyConcepts.length > 0 && (
         <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-5 border border-blue-200 dark:border-blue-800">
           <div className="flex items-center gap-2 mb-4">
             <Lightbulb className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
@@ -59,7 +59,7 @@ export function ExplanationPanel({ explanation }: ExplanationPanelProps) {
       )}
 
       {/* Common Mistakes */}
-      {explanation.commonMistakes.length > 0 && (
+      {explanation.commonMistakes && explanation.commonMistakes.length > 0 && (
         <div className="bg-amber-50 dark:bg-amber-900/30 rounded-lg p-5 border border-amber-200 dark:border-amber-800">
           <div className="flex items-center gap-2 mb-4">
             <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />

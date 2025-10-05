@@ -49,5 +49,33 @@
   "loading": {
     "pleaseWait": "Please wait...",
     "processing": "Processing your request..."
+  },
+  "codePlayground": {
+    "title": "Code Execution",
+    "run": "Run",
+    "running": "Running...",
+    "success": "✅ Success",
+    "failed": "❌ Failed",
+    "notSupported": "💡 Currently only JavaScript and Python are supported.",
+    "pyodideLoading": "🐍 Loading Python environment... (First time only)"
+  },
+  "performance": {
+    "title": "Performance Measurement",
+    "measure": "Measure",
+    "measuring": "Measuring...",
+    "average": "Average",
+    "min": "Min",
+    "max": "Max",
+    "iterations": "iterations"
+  },
+  "notion": {
+    "save": "Save to Notion",
+    "saving": "Saving...",
+    "success": "Successfully saved to Notion!",
+    "error": "Failed to save to Notion"
+  },
+  "codeEditor": {
+    "keyDecisions": "🎯 Key Decisions",
+    "nextSteps": "📋 Next Steps"
   }
 }
