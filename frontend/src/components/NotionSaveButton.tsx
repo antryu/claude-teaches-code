@@ -34,7 +34,7 @@ export function NotionSaveButton(props: NotionSaveButtonProps) {
 
   const handleConfigure = async () => {
     if (!token) {
-      setMessage({ type: 'error', text: 'Integration Token을 입력하세요' });
+      setMessage({ type: 'error', text: 'Please enter Integration Token' });
       return;
     }
 
@@ -50,19 +50,19 @@ export function NotionSaveButton(props: NotionSaveButtonProps) {
       if (data.success) {
         setIsConfigured(true);
         setShowConfig(false);
-        setMessage({ type: 'success', text: `Notion 연결 성공! (${data.user})` });
+        setMessage({ type: 'success', text: `Notion connected! (${data.user})` });
         setTimeout(() => setMessage(null), 3000);
       } else {
         setMessage({ type: 'error', text: data.error });
       }
     } catch (error) {
-      setMessage({ type: 'error', text: '연결 실패' });
+      setMessage({ type: 'error', text: 'Connection failed' });
     }
   };
 
   const handleSave = async () => {
     if (!isConfigured) {
-      setMessage({ type: 'error', text: 'Notion을 먼저 설정하세요' });
+      setMessage({ type: 'error', text: 'Please configure Notion first' });
       setShowConfig(true);
       return;
     }
@@ -83,7 +83,7 @@ export function NotionSaveButton(props: NotionSaveButtonProps) {
       const data = await response.json();
 
       if (data.success) {
-        setMessage({ type: 'success', text: 'Notion에 저장 완료!' });
+        setMessage({ type: 'success', text: 'Successfully saved to Notion!' });
         setTimeout(() => {
           if (data.pageUrl) {
             window.open(data.pageUrl, '_blank');
@@ -94,7 +94,7 @@ export function NotionSaveButton(props: NotionSaveButtonProps) {
         setMessage({ type: 'error', text: data.error });
       }
     } catch (error) {
-      setMessage({ type: 'error', text: '저장 실패' });
+      setMessage({ type: 'error', text: 'Failed to save' });
     } finally {
       setIsSaving(false);
     }
@@ -105,12 +105,12 @@ export function NotionSaveButton(props: NotionSaveButtonProps) {
       <div className="flex items-center justify-between mb-4">
         <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
           <BookmarkPlus className="w-5 h-5 text-purple-500" />
-          Notion 저장
+          Save to Notion
         </h4>
         <button
           onClick={() => setShowConfig(!showConfig)}
           className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-          title="Notion 설정"
+          title="Notion Settings"
         >
           <Settings className="w-4 h-4 text-gray-600 dark:text-gray-400" />
         </button>
@@ -136,13 +136,13 @@ export function NotionSaveButton(props: NotionSaveButtonProps) {
               rel="noopener noreferrer"
               className="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-1 inline-block"
             >
-              Notion Integration 만들기 →
+              Create Notion Integration →
             </a>
           </div>
 
           <div>
             <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Database ID (선택사항)
+              Database ID (Optional)
             </label>
             <input
               type="text"
@@ -152,7 +152,7 @@ export function NotionSaveButton(props: NotionSaveButtonProps) {
               className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-sm focus:ring-2 focus:ring-purple-500"
             />
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Database URL에서 복사: notion.so/workspace/<strong>DATABASE_ID</strong>?v=...
+              Copy from Database URL: notion.so/workspace/<strong>DATABASE_ID</strong>?v=...
             </p>
           </div>
 
@@ -161,7 +161,7 @@ export function NotionSaveButton(props: NotionSaveButtonProps) {
             className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded transition-colors text-sm font-medium"
           >
             <Check className="w-4 h-4" />
-            연결하기
+            Connect
           </button>
         </div>
       )}
@@ -169,7 +169,7 @@ export function NotionSaveButton(props: NotionSaveButtonProps) {
       {/* 태그 입력 */}
       <div className="mb-3">
         <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-          태그 (쉼표로 구분)
+          Tags (comma separated)
         </label>
         <input
           type="text"
@@ -189,12 +189,12 @@ export function NotionSaveButton(props: NotionSaveButtonProps) {
         {isSaving ? (
           <>
             <Loader className="w-4 h-4 animate-spin" />
-            저장 중...
+            Saving...
           </>
         ) : (
           <>
             <BookmarkPlus className="w-4 h-4" />
-            Notion에 저장
+            Save to Notion
           </>
         )}
       </button>
@@ -220,7 +220,7 @@ export function NotionSaveButton(props: NotionSaveButtonProps) {
       {/* 도움말 */}
       {!isConfigured && !showConfig && (
         <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-xs text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800">
-          💡 <strong>처음 사용</strong>: 톱니바퀴 아이콘을 클릭하여 Notion을 설정하세요
+          💡 <strong>First time?</strong> Click the gear icon to configure Notion
         </div>
       )}
     </div>

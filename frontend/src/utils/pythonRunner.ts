@@ -13,16 +13,29 @@ export interface PythonExecutionResult {
  * Pyodide 초기화 (최초 1회만)
  */
 export async function initPyodide(): Promise<void> {
-  if (pyodideInstance) return;
+  if (pyodideInstance) {
+    console.log('Pyodide already initialized');
+    return;
+  }
 
   try {
-    console.log('Pyodide 로딩 중...');
-    pyodideInstance = await loadPyodide({
-      indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/',
-    });
-    console.log('Pyodide 로딩 완료!');
+    console.log('🐍 Pyodide loading... (this may take 10-30 seconds on first load)');
+    const startTime = Date.now();
+
+    pyodideInstance = await Promise.race([
+      loadPyodide({
+        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.28.3/full/',
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Pyodide loading timeout (60s)')), 60000)
+      )
+    ]);
+
+    const loadTime = Date.now() - startTime;
+    console.log(`✅ Pyodide loaded successfully in ${(loadTime / 1000).toFixed(1)}s`);
   } catch (error) {
-    console.error('Pyodide 로딩 실패:', error);
+    console.error('❌ Pyodide loading failed:', error);
+    pyodideInstance = null;
     throw error;
   }
 }
@@ -36,12 +49,15 @@ export async function executePython(code: string): Promise<PythonExecutionResult
   try {
     // Pyodide가 로드되지 않았으면 로드
     if (!pyodideInstance) {
+      console.log('🔄 Pyodide not loaded, initializing...');
       await initPyodide();
     }
 
     if (!pyodideInstance) {
-      throw new Error('Pyodide 초기화 실패');
+      throw new Error('Failed to initialize Pyodide. Please refresh and try again.');
     }
+
+    console.log('▶️ Executing Python code...');
 
     // stdout 캡처를 위한 래퍼 코드
     const wrappedCode = `
@@ -64,17 +80,21 @@ output
     const result = await pyodideInstance.runPythonAsync(wrappedCode);
     const executionTime = Date.now() - startTime;
 
+    console.log(`✅ Python execution completed in ${executionTime}ms`);
+
     return {
       success: true,
-      output: result || '(실행 완료 - 출력 없음)',
+      output: result || '(Execution completed - No output)',
       executionTime,
     };
   } catch (error: any) {
     const executionTime = Date.now() - startTime;
 
+    console.error('❌ Python execution error:', error);
+
     return {
       success: false,
-      error: error.message || 'Python 실행 중 오류 발생',
+      error: error.message || 'Error during Python execution',
       executionTime,
     };
   }

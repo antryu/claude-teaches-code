@@ -72,7 +72,7 @@ router.post('/save-note', async (req, res) => {
     if (!notionClient) {
       return res.status(400).json({
         success: false,
-        error: 'Notion이 설정되지 않았습니다. /api/notion/configure를 먼저 호출하세요.',
+        error: 'Notion is not configured. Please call /api/notion/configure first.',
       });
     }
 
@@ -91,10 +91,29 @@ router.post('/save-note', async (req, res) => {
     } = req.body;
 
     const targetDatabaseId = databaseId ? extractDatabaseId(databaseId) : defaultDatabaseId;
+
+    // Database ID가 없으면 간단한 페이지로 저장
     if (!targetDatabaseId) {
-      return res.status(400).json({
-        success: false,
-        error: 'Database ID가 필요합니다.',
+      console.log('No database ID, creating simple page');
+
+      const page = await notionClient.pages.create({
+        parent: {
+          type: 'page_id',
+          page_id: await getDefaultPageId(notionClient),
+        },
+        properties: {
+          title: {
+            title: [{ text: { content: title || 'Code Learning Note' } }],
+          },
+        },
+        children: buildPageContent(code, language, explanation, keyConcepts, warnings, nextSteps, executionResult),
+      });
+
+      return res.json({
+        success: true,
+        message: 'Successfully saved to Notion as a page!',
+        pageUrl: (page as any).url,
+        pageId: page.id,
       });
     }
 
@@ -109,7 +128,7 @@ router.post('/save-note', async (req, res) => {
     } catch (error: any) {
       return res.status(500).json({
         success: false,
-        error: `Database 접근 실패: ${error.message}. Integration이 이 Database에 연결되어 있는지 확인하세요.`,
+        error: `Database access failed: ${error.message}. Make sure the Integration is connected to this Database.`,
       });
     }
 
@@ -117,7 +136,7 @@ router.post('/save-note', async (req, res) => {
     if (!dbProperties || typeof dbProperties !== 'object') {
       return res.status(500).json({
         success: false,
-        error: 'Database 속성을 가져올 수 없습니다. Database ID가 올바른지 확인하세요.',
+        error: 'Cannot retrieve database properties. Please verify the Database ID and Integration connection.',
       });
     }
 
@@ -162,130 +181,20 @@ router.post('/save-note', async (req, res) => {
       },
       properties,
       children: [
-        {
-          object: 'block',
-          type: 'heading_2',
-          heading_2: {
-            rich_text: [{ type: 'text', text: { content: '📝 코드' } }],
-          },
-        },
-        {
-          object: 'block',
-          type: 'code',
-          code: {
-            language: mapLanguage(language),
-            rich_text: [{ type: 'text', text: { content: code } }],
-          },
-        },
-        {
-          object: 'block',
-          type: 'heading_2',
-          heading_2: {
-            rich_text: [{ type: 'text', text: { content: '💡 설명' } }],
-          },
-        },
-        {
-          object: 'block',
-          type: 'paragraph',
-          paragraph: {
-            rich_text: [{ type: 'text', text: { content: explanation } }],
-          },
-        },
-        ...(keyConcepts && keyConcepts.length > 0
-          ? [
-              {
-                object: 'block' as const,
-                type: 'heading_3' as const,
-                heading_3: {
-                  rich_text: [{ type: 'text' as const, text: { content: '🔑 핵심 개념' } }],
-                },
-              },
-              ...keyConcepts.map((concept: string) => ({
-                object: 'block' as const,
-                type: 'bulleted_list_item' as const,
-                bulleted_list_item: {
-                  rich_text: [{ type: 'text' as const, text: { content: concept } }],
-                },
-              })),
-            ]
-          : []),
-        ...(warnings && warnings.length > 0
-          ? [
-              {
-                object: 'block' as const,
-                type: 'heading_3' as const,
-                heading_3: {
-                  rich_text: [{ type: 'text' as const, text: { content: '⚠️ 주의사항' } }],
-                },
-              },
-              ...warnings.map((warning: string) => ({
-                object: 'block' as const,
-                type: 'bulleted_list_item' as const,
-                bulleted_list_item: {
-                  rich_text: [{ type: 'text' as const, text: { content: warning } }],
-                },
-              })),
-            ]
-          : []),
-        ...(executionResult
-          ? [
-              {
-                object: 'block' as const,
-                type: 'heading_3' as const,
-                heading_3: {
-                  rich_text: [{ type: 'text' as const, text: { content: '⚡ 실행 결과' } }],
-                },
-              },
-              {
-                object: 'block' as const,
-                type: 'code' as const,
-                code: {
-                  language: 'plain text' as any,
-                  rich_text: [
-                    {
-                      type: 'text' as const,
-                      text: {
-                        content: executionResult.success
-                          ? `✅ 성공\n출력: ${executionResult.output}\n실행 시간: ${executionResult.executionTime}ms`
-                          : `❌ 실패`,
-                      },
-                    },
-                  ],
-                },
-              },
-            ]
-          : []),
-        ...(nextSteps && nextSteps.length > 0
-          ? [
-              {
-                object: 'block' as const,
-                type: 'heading_3' as const,
-                heading_3: {
-                  rich_text: [{ type: 'text' as const, text: { content: '🚀 다음 단계' } }],
-                },
-              },
-              ...nextSteps.map((step: string) => ({
-                object: 'block' as const,
-                type: 'bulleted_list_item' as const,
-                bulleted_list_item: {
-                  rich_text: [{ type: 'text' as const, text: { content: step } }],
-                },
-              })),
-            ]
-          : []),
+        ...buildPageContent(code, language, explanation, keyConcepts, warnings, nextSteps, executionResult),
       ],
     });
 
     res.json({
       success: true,
-      message: 'Notion에 학습 노트 저장 완료',
+      message: 'Successfully saved to Notion!',
       pageUrl: (page as any).url,
       pageId: page.id,
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      error: `저장 실패: ${error.message}`,
+      error: `Failed to save: ${error.message}`,
     });
   }
 });
@@ -373,6 +282,177 @@ function mapLanguage(lang: string): any {
     java: 'java',
   };
   return languageMap[lang.toLowerCase()] || 'plain text';
+}
+
+// Get default page ID from search results
+async function getDefaultPageId(client: Client): Promise<string> {
+  const response = await client.search({
+    filter: { property: 'object', value: 'page' },
+    page_size: 1,
+  });
+
+  if (response.results.length === 0) {
+    throw new Error('No accessible pages found. Please create a page in Notion and share it with the Integration.');
+  }
+
+  return response.results[0].id;
+}
+
+// Split text into chunks of max 2000 characters
+function splitText(text: string, maxLength: number = 2000): string[] {
+  if (text.length <= maxLength) return [text];
+
+  const chunks: string[] = [];
+  let remaining = text;
+
+  while (remaining.length > 0) {
+    if (remaining.length <= maxLength) {
+      chunks.push(remaining);
+      break;
+    }
+
+    // Try to split at newline
+    let splitIndex = remaining.lastIndexOf('\n', maxLength);
+    if (splitIndex === -1 || splitIndex < maxLength / 2) {
+      // No good newline found, split at maxLength
+      splitIndex = maxLength;
+    }
+
+    chunks.push(remaining.substring(0, splitIndex));
+    remaining = remaining.substring(splitIndex);
+  }
+
+  return chunks;
+}
+
+// Build page content blocks
+function buildPageContent(
+  code: string,
+  language: string,
+  explanation: string,
+  keyConcepts?: string[],
+  warnings?: string[],
+  nextSteps?: string[],
+  executionResult?: any
+): any[] {
+  const codeChunks = splitText(code, 2000);
+  const explanationChunks = splitText(explanation, 2000);
+
+  return [
+    {
+      object: 'block',
+      type: 'heading_2',
+      heading_2: {
+        rich_text: [{ type: 'text', text: { content: '📝 Code' } }],
+      },
+    },
+    // Split code into multiple blocks if needed
+    ...codeChunks.map((chunk, index) => ({
+      object: 'block' as const,
+      type: 'code' as const,
+      code: {
+        language: mapLanguage(language),
+        rich_text: [{ type: 'text', text: { content: chunk } }],
+      },
+    })),
+    {
+      object: 'block',
+      type: 'heading_2',
+      heading_2: {
+        rich_text: [{ type: 'text', text: { content: '💡 Explanation' } }],
+      },
+    },
+    // Split explanation into multiple blocks if needed
+    ...explanationChunks.map((chunk) => ({
+      object: 'block' as const,
+      type: 'paragraph' as const,
+      paragraph: {
+        rich_text: [{ type: 'text', text: { content: chunk } }],
+      },
+    })),
+    ...(keyConcepts && keyConcepts.length > 0
+      ? [
+          {
+            object: 'block' as const,
+            type: 'heading_3' as const,
+            heading_3: {
+              rich_text: [{ type: 'text' as const, text: { content: '🔑 Key Concepts' } }],
+            },
+          },
+          ...keyConcepts.map((concept: string) => ({
+            object: 'block' as const,
+            type: 'bulleted_list_item' as const,
+            bulleted_list_item: {
+              rich_text: [{ type: 'text' as const, text: { content: concept } }],
+            },
+          })),
+        ]
+      : []),
+    ...(warnings && warnings.length > 0
+      ? [
+          {
+            object: 'block' as const,
+            type: 'heading_3' as const,
+            heading_3: {
+              rich_text: [{ type: 'text' as const, text: { content: '⚠️ Warnings' } }],
+            },
+          },
+          ...warnings.map((warning: string) => ({
+            object: 'block' as const,
+            type: 'bulleted_list_item' as const,
+            bulleted_list_item: {
+              rich_text: [{ type: 'text' as const, text: { content: warning } }],
+            },
+          })),
+        ]
+      : []),
+    ...(executionResult
+      ? [
+          {
+            object: 'block' as const,
+            type: 'heading_3' as const,
+            heading_3: {
+              rich_text: [{ type: 'text' as const, text: { content: '⚡ Execution Result' } }],
+            },
+          },
+          {
+            object: 'block' as const,
+            type: 'code' as const,
+            code: {
+              language: 'plain text' as any,
+              rich_text: [
+                {
+                  type: 'text' as const,
+                  text: {
+                    content: executionResult.success
+                      ? `✅ Success\nOutput: ${executionResult.output}\nExecution Time: ${executionResult.executionTime}ms`
+                      : `❌ Failed`,
+                  },
+                },
+              ],
+            },
+          },
+        ]
+      : []),
+    ...(nextSteps && nextSteps.length > 0
+      ? [
+          {
+            object: 'block' as const,
+            type: 'heading_3' as const,
+            heading_3: {
+              rich_text: [{ type: 'text' as const, text: { content: '🚀 Next Steps' } }],
+            },
+          },
+          ...nextSteps.map((step: string) => ({
+            object: 'block' as const,
+            type: 'bulleted_list_item' as const,
+            bulleted_list_item: {
+              rich_text: [{ type: 'text' as const, text: { content: step } }],
+            },
+          })),
+        ]
+      : []),
+  ];
 }
 
 export default router;

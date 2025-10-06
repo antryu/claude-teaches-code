@@ -65,7 +65,257 @@ When you type "Create a Fibonacci function" and click "Generate":
 │    - CodeEditor: Monaco editor with generated code      │
 │    - ExplanationPanel: Markdown explanation             │
 └─────────────────────────────────────────────────────────┘
+                        ↓
+┌─────────────────────────────────────────────────────────┐
+│ 7. USER ACTION: Clicks "Save to Notion" button          │
+│    File: frontend/src/components/NotionSaveButton.tsx   │
+│    Action: Prepares data for Notion                     │
+└─────────────────────────────────────────────────────────┘
+                        ↓
+┌─────────────────────────────────────────────────────────┐
+│ 8. BACKEND: /api/notion/save endpoint                   │
+│    File: backend/src/routes/notion.ts                   │
+│    Action:                                               │
+│    - Receives code, explanation, execution results      │
+│    - Formats data for Notion API                        │
+│    - Creates new page in Notion database                │
+└─────────────────────────────────────────────────────────┘
+                        ↓
+┌─────────────────────────────────────────────────────────┐
+│ 9. NOTION API: Saves to workspace                       │
+│    Action:                                               │
+│    - Creates database entry with title                  │
+│    - Adds code block with syntax highlighting           │
+│    - Adds explanation as rich text                      │
+│    - Includes execution results if available            │
+└─────────────────────────────────────────────────────────┘
+                        ↓
+┌─────────────────────────────────────────────────────────┐
+│ 10. FRONTEND: Shows success notification                │
+│     Message: "Successfully saved to Notion!"            │
+└─────────────────────────────────────────────────────────┘
 ```
+
+## Complete Workflow: Code Generation + Notion Save
+
+### Full User Journey (Korean / 한글)
+
+```
+사용자가 "피보나치 함수 만들어줘"를 입력하고 생성 버튼을 클릭:
+
+┌────────────────────────────────────────────────┐
+│ 1단계: 프론트엔드 - 생성 버튼 클릭             │
+│   파일: frontend/src/App.tsx                   │
+│   동작: generateCodeStream API 호출            │
+└────────────────────────────────────────────────┘
+                    ↓
+┌────────────────────────────────────────────────┐
+│ 2단계: 백엔드 - /api/generate 요청 수신        │
+│   파일: backend/src/routes/generate.ts         │
+│   동작: Server-Sent Events(SSE) 스트림 설정    │
+└────────────────────────────────────────────────┘
+                    ↓
+┌────────────────────────────────────────────────┐
+│ 3단계: Orchestrator 에이전트 - 요청 분석       │
+│   파일: backend/src/agents/orchestrator.ts     │
+│   동작: 코드 생성 필요 여부 판단               │
+│   출력: 워크플로우 계획 (실행할 단계들)        │
+└────────────────────────────────────────────────┘
+                    ↓
+┌────────────────────────────────────────────────┐
+│ 4단계: CodeGen 에이전트 - 코드 생성            │
+│   파일: backend/src/agents/codeGen.ts          │
+│   동작:                                         │
+│   - Claude API 호출 (Extended Thinking 사용)   │
+│   - 사고 과정 추출                             │
+│   - 응답에서 코드 파싱                         │
+│   - 프로그래밍 언어 자동 감지                  │
+│   - 주요 결정사항 & 다음 단계 추출             │
+└────────────────────────────────────────────────┘
+                    ↓
+┌────────────────────────────────────────────────┐
+│ 5단계: Explain 에이전트 - 코드 설명            │
+│   파일: backend/src/agents/explain.ts          │
+│   동작:                                         │
+│   - Claude API 호출 (Extended Thinking 사용)   │
+│   - 상세 설명 생성                             │
+│   - 핵심 개념 식별                             │
+│   - 흔한 실수 목록화                           │
+└────────────────────────────────────────────────┘
+                    ↓
+┌────────────────────────────────────────────────┐
+│ 6단계: 프론트엔드 - 결과 표시                  │
+│   컴포넌트:                                     │
+│   - WorkflowVisualizer: 에이전트 진행상황      │
+│   - ThinkingProcess: Extended Thinking 표시    │
+│   - CodeEditor: 생성된 코드 (Monaco 에디터)    │
+│   - ExplanationPanel: 마크다운 설명            │
+└────────────────────────────────────────────────┘
+                    ↓
+┌────────────────────────────────────────────────┐
+│ 7단계: 사용자 - "Notion에 저장" 버튼 클릭      │
+│   파일: frontend/src/components/               │
+│         NotionSaveButton.tsx                   │
+│   동작: Notion 전송용 데이터 준비              │
+└────────────────────────────────────────────────┘
+                    ↓
+┌────────────────────────────────────────────────┐
+│ 8단계: 백엔드 - /api/notion/save 엔드포인트    │
+│   파일: backend/src/routes/notion.ts           │
+│   동작:                                         │
+│   - 코드, 설명, 실행 결과 수신                 │
+│   - Notion API용 데이터 포맷팅                 │
+│   - Notion 데이터베이스에 새 페이지 생성       │
+└────────────────────────────────────────────────┘
+                    ↓
+┌────────────────────────────────────────────────┐
+│ 9단계: Notion API - 워크스페이스에 저장        │
+│   동작:                                         │
+│   - 제목으로 데이터베이스 항목 생성            │
+│   - 구문 강조된 코드 블록 추가                 │
+│   - 설명을 서식있는 텍스트로 추가              │
+│   - 실행 결과 포함 (있는 경우)                 │
+└────────────────────────────────────────────────┘
+                    ↓
+┌────────────────────────────────────────────────┐
+│ 10단계: 프론트엔드 - 성공 알림 표시            │
+│   메시지: "Notion에 성공적으로 저장되었습니다!"│
+└────────────────────────────────────────────────┘
+```
+
+---
+
+## Code Execution Workflow
+
+When user clicks "Run" button to execute generated code:
+
+```
+┌────────────────────────────────────────────────┐
+│ 1. USER ACTION: Clicks "Run Code" button      │
+│   File: frontend/src/components/              │
+│         CodePlayground.tsx                     │
+│   Action: Triggers handleRun function         │
+└────────────────────────────────────────────────┘
+                        ↓
+┌────────────────────────────────────────────────┐
+│ 2. FRONTEND: Sends execution request          │
+│   File: frontend/src/components/              │
+│         CodePlayground.tsx                     │
+│   Action:                                      │
+│   - Prepares code for execution                │
+│   - Sends POST to /api/playground/execute      │
+│   - Sets loading state                         │
+└────────────────────────────────────────────────┘
+                        ↓
+┌────────────────────────────────────────────────┐
+│ 3. BACKEND: Receives execution request        │
+│   File: backend/src/routes/playground.ts       │
+│   Action:                                      │
+│   - Validates code input                       │
+│   - Creates secure sandbox environment         │
+│   - Sets up console capture                    │
+└────────────────────────────────────────────────┘
+                        ↓
+┌────────────────────────────────────────────────┐
+│ 4. EXECUTION: Runs code in sandbox            │
+│   File: backend/src/routes/playground.ts       │
+│   Action:                                      │
+│   - Executes code in isolated environment      │
+│   - Captures console.log/error/time outputs    │
+│   - Measures execution time                    │
+│   - Handles errors safely                      │
+└────────────────────────────────────────────────┘
+                        ↓
+┌────────────────────────────────────────────────┐
+│ 5. BACKEND: Returns results                   │
+│   File: backend/src/routes/playground.ts       │
+│   Response:                                    │
+│   {                                            │
+│     success: true,                             │
+│     data: {                                    │
+│       output: "console output...",             │
+│       executionTime: 12                        │
+│     }                                          │
+│   }                                            │
+└────────────────────────────────────────────────┘
+                        ↓
+┌────────────────────────────────────────────────┐
+│ 6. FRONTEND: Displays results                 │
+│   File: frontend/src/components/              │
+│         CodePlayground.tsx                     │
+│   Action:                                      │
+│   - Shows execution output in result box       │
+│   - Displays execution time                    │
+│   - Shows errors with red styling if failed    │
+└────────────────────────────────────────────────┘
+```
+
+### 코드 실행 워크플로우
+
+사용자가 생성된 코드를 실행하기 위해 "Run Code" 버튼을 클릭:
+
+```
+┌────────────────────────────────────────────────┐
+│ 1단계: 사용자 - "Run Code" 버튼 클릭          │
+│   파일: frontend/src/components/              │
+│         CodePlayground.tsx                     │
+│   동작: handleRun 함수 실행                    │
+└────────────────────────────────────────────────┘
+                        ↓
+┌────────────────────────────────────────────────┐
+│ 2단계: 프론트엔드 - 실행 요청 전송            │
+│   파일: frontend/src/components/              │
+│         CodePlayground.tsx                     │
+│   동작:                                        │
+│   - 실행할 코드 준비                           │
+│   - /api/playground/execute로 POST 요청        │
+│   - 로딩 상태 설정                             │
+└────────────────────────────────────────────────┘
+                        ↓
+┌────────────────────────────────────────────────┐
+│ 3단계: 백엔드 - 실행 요청 수신                │
+│   파일: backend/src/routes/playground.ts       │
+│   동작:                                        │
+│   - 코드 입력 유효성 검사                      │
+│   - 보안 샌드박스 환경 생성                    │
+│   - console 캡처 설정                          │
+└────────────────────────────────────────────────┘
+                        ↓
+┌────────────────────────────────────────────────┐
+│ 4단계: 실행 - 샌드박스에서 코드 실행          │
+│   파일: backend/src/routes/playground.ts       │
+│   동작:                                        │
+│   - 격리된 환경에서 코드 실행                  │
+│   - console.log/error/time 출력 캡처           │
+│   - 실행 시간 측정                             │
+│   - 에러 안전하게 처리                         │
+└────────────────────────────────────────────────┘
+                        ↓
+┌────────────────────────────────────────────────┐
+│ 5단계: 백엔드 - 결과 반환                     │
+│   파일: backend/src/routes/playground.ts       │
+│   응답:                                        │
+│   {                                            │
+│     success: true,                             │
+│     data: {                                    │
+│       output: "console 출력...",               │
+│       executionTime: 12                        │
+│     }                                          │
+│   }                                            │
+└────────────────────────────────────────────────┘
+                        ↓
+┌────────────────────────────────────────────────┐
+│ 6단계: 프론트엔드 - 결과 표시                 │
+│   파일: frontend/src/components/              │
+│         CodePlayground.tsx                     │
+│   동작:                                        │
+│   - 결과 박스에 실행 출력 표시                 │
+│   - 실행 시간 표시                             │
+│   - 실패 시 빨간색 스타일로 에러 표시          │
+└────────────────────────────────────────────────┘
+```
+
+---
 
 ## Actual Code Flow
 

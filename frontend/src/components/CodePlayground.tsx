@@ -58,7 +58,7 @@ export function CodePlayground({ code, language, onExecutionResult }: CodePlaygr
         } else {
           setResult({
             success: false,
-            error: data.error || '실행 실패',
+            error: data.error || 'Execution failed',
           });
           if (onExecutionResult) {
             onExecutionResult({ success: false });
@@ -67,7 +67,7 @@ export function CodePlayground({ code, language, onExecutionResult }: CodePlaygr
       } catch (error) {
         const errorResult = {
           success: false,
-          error: error instanceof Error ? error.message : '실행 중 오류 발생',
+          error: error instanceof Error ? error.message : 'Error during execution',
         };
         setResult(errorResult);
         if (onExecutionResult) {
@@ -100,7 +100,7 @@ export function CodePlayground({ code, language, onExecutionResult }: CodePlaygr
       } catch (error) {
         const errorResult = {
           success: false,
-          error: error instanceof Error ? error.message : 'Python 실행 중 오류 발생',
+          error: error instanceof Error ? error.message : 'Error during Python execution',
         };
         setResult(errorResult);
         if (onExecutionResult) {
@@ -116,7 +116,7 @@ export function CodePlayground({ code, language, onExecutionResult }: CodePlaygr
     // 지원하지 않는 언어
     setResult({
       success: false,
-      error: `${language} 실행은 아직 지원하지 않습니다. JavaScript 또는 Python만 실행 가능합니다.`,
+      error: `${language} execution is not supported yet. Only JavaScript and Python are available.`,
     });
   };
 
